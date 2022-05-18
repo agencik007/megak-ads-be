@@ -8,12 +8,13 @@ test('AdRecord returns data from database for one entry.', async () => {
 
     expect(ad).toBeDefined();
     expect(ad.id).toBe('abcd');
-    expect(ad.name).toBe('Testowa');
+    expect(ad.name).toBe('test');
     //...
 
 });
 
 test('AdRecord returns null from database for unexisting entry.', async () => {
+
     const ad = await AdRecord.getOne('---');
 
     expect(ad).toBeNull();
