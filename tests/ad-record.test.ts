@@ -1,10 +1,10 @@
 import { AdRecord } from "../records/ad.record";
 
-const defaultObj = {
+export const defaultObj = {
     name: 'Test Name',
     description: 'blah blah',
     url: 'http://example.com',
-    price: 10,
+    price: 0,
     lat: 9,
     lon: 9,
 }
@@ -19,8 +19,8 @@ test('Can build AdRecord', () => {
 test('Validates invalid price', () => {
     expect(() => new AdRecord({
         ...defaultObj,
-        price: -3,
-    })).toThrow('Cena nie może być mniejsza od 0 lub większa niż 9 999 999.');
+        price: -10,
+    })).toThrow('Cena nie może być mniejsza niż 0 lub większa niż 9 999 999.');
 });
 
 // @TODO Check all the validations

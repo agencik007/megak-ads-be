@@ -1,6 +1,7 @@
 import { AdRecord } from "../records/ad.record";
 import {pool} from "../utils/db";
 import {AdEntity} from "../types";
+import {defaultObj} from "./ad-record.test";
 
 afterAll(async () => {
     await pool.end();
@@ -34,13 +35,11 @@ test('AdRecord.findAll returns array of found entries.', async () => {
 
 });
 
-test('AdRecord.findAll returns array of found entries when searching for "abcd".', async () => {
+test('AdRecord.findAll returns array of found entries when searching for "test".', async () => {
 
-    const ads = await AdRecord.findAll('abcd');
+    const ads = await AdRecord.findAll('test');
 
-    console.log(ads)
-
-    expect(ads).toEqual([]);
+    expect(ads).not.toEqual([]);
     expect(ads[0].id).toBeDefined();
 
 });
@@ -61,3 +60,28 @@ test('AdRecord.findAll returns smaller amount of data.', async () => {
     expect((ads[0] as AdEntity).description).toBeUndefined();
 
 });
+
+test('AdRecord.insert inserts returns new UUID.', async () => {
+
+    const ad = new AdRecord(defaultObj);
+
+    await ad.insert();
+
+    expect(ad.id).toBeDefined();
+    expect(typeof ad.id).toBe('string');
+});
+
+test('AdRecord.insert inserts data to database.', async () => {
+
+    const ad = new AdRecord(defaultObj);
+    await ad.insert();
+
+    const foundAd = await AdRecord.getOne(ad.id);
+
+    expect(foundAd).toBeDefined();
+    expect(foundAd).not.toBeNull();
+    expect(foundAd.id).toBe(ad.id);
+
+});
+
+
