@@ -1,4 +1,4 @@
-import {AdEntity, NewAdEntity} from "../types";
+import {AdEntity, NewAdEntity, SimpleAdEntity} from "../types";
 import { ValidationError } from "../utils/errors";
 import {pool} from "../utils/db";
 import {FieldPacket} from "mysql2";
@@ -6,6 +6,7 @@ import {FieldPacket} from "mysql2";
 type AdRecordResults = [AdEntity[], FieldPacket[]];
 
 export class AdRecord implements AdEntity {
+
     public id: string;
     public name: string;
     public description: string;
@@ -51,5 +52,23 @@ export class AdRecord implements AdEntity {
         }) as AdRecordResults;
 
         return results.length === 0 ? null : new AdRecord(results[0]);
+    }
+
+    static async findAll(name: string): Promise<SimpleAdEntity[]> {
+        const [results] = await pool.execute("SELECT * FROM `ads` WHERE `name` LIKE :search", {
+            search: `%${name}%`,
+        }) as AdRecordResults;
+
+        // return results.map(result => new AdRecord(result));
+
+        return results.map(result => {
+            const {
+                id, lat, lon,
+            } = result;
+
+            return {
+                id, lat, lon,
+            };
+        });
     }
 }
